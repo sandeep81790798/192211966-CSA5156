@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <ctype.h>
+
+void monoalphabeticCipher(char* text, char* key) {
+    char plaintext[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            char ch = toupper(text[i]);
+            for (int j = 0; j < 26; j++) {
+                if (plaintext[j] == ch) {
+                    text[i] = islower(text[i]) ? tolower(key[j]) : key[j];
+                    break;
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    char text[100];
+    char key[27] = "QWERTYUIOPASDFGHJKLZXCVBNM";
+    printf("Enter text: ");
+    fgets(text, 100, stdin);
+    monoalphabeticCipher(text, key);
+    printf("Encrypted text: %s", text);
+    return 0;
+}
