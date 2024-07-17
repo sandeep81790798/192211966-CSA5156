@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int gcd(int a, int b) {
+    while (b != 0) {
+        int t = b;
+        b = a % b;
+        a = t;
+    }
+    return a;
+}
+
+void affineEncrypt(char* text, int a, int b) {
+    if (gcd(a, 26) != 1) {
+        printf("Invalid value for a. It must be coprime with 26.\n");
+        return;
+    }
+    
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            char offset = islower(text[i]) ? 'a' : 'A';
+            text[i] = (char)((((a * (text[i] - offset)) + b) % 26) + offset);
+        }
+    }
+}
+
+int main() {
+    char text[100];
+    int a, b;
+
+    printf("Enter text: ");
+    fgets(text, sizeof(text), stdin);
+    text[strcspn(text, "\n")] = '\0';  // Remove newline character
+
+    printf("Enter a: ");
+    scanf("%d", &a);
+
+    printf("Enter b: ");
+    scanf("%d", &b);
+
+    affineEncrypt(text, a, b);
+
+    printf("Encrypted text: %s\n", text);
+    return 0;
+}
