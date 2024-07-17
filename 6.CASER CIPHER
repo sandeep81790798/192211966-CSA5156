@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+int modInverse(int a, int m) {
+    a = a % m;
+    for (int x = 1; x < m; x++) {
+        if ((a * x) % m == 1) {
+            return x;
+        }
+    }
+    return -1;
+}
+void affineDecrypt(char* text, int a, int b) {
+    int a_inv = modInverse(a, 26);
+    if (a_inv == -1) {
+        printf("Decryption is not possible for the given key.\n");
+        return;
+    }
+
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            char offset = islower(text[i]) ? 'a' : 'A';
+            int p = text[i] - offset;
+            int plain = (a_inv * (p - b + 26)) % 26;
+            text[i] = (char)(plain + offset);
+        }
+    }
+}
+
+int main() {
+    char ciphertext[100];
+    int a, b;
+    char mostFrequent = 'B';
+    char secondMostFrequent = 'U'; 
+
+    printf("Enter ciphertext: ");
+    fgets(ciphertext, sizeof(ciphertext), stdin);
+    ciphertext[strcspn(ciphertext, "\n")] = '\0';  
+    int p1 = mostFrequent - 'A';
+    int c1 = 'E' - 'A';
+    int p2 = secondMostFrequent - 'A';
+    int c2 = 'T' - 'A'; 
+
+    a = (c1 - c2 + 26) % 26 * modInverse((p1 - p2 + 26) % 26, 26) % 26;
+
+    b = (c1 - a * p1 + 26) % 26;
+
+    affineDecrypt(ciphertext, a, b);
+
+    printf("Decrypted text: %s\n", ciphertext);
+    return 0;
+}
